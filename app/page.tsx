@@ -55,10 +55,16 @@ export default function Dashboard() {
         : '/api/dashboard'
 
       const response = await fetch(url)
+      
+      if (!response.ok) {
+        throw new Error(`Erro ${response.status}: ${response.statusText}`)
+      }
+      
       const result = await response.json()
       setData(result)
     } catch (error) {
-      console.error('Erro ao carregar dashboard:', error)
+      console.error('Erro ao buscar dashboard:', error)
+      setData(null)
     } finally {
       setLoading(false)
     }

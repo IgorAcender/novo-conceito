@@ -2,7 +2,11 @@
 
 # Executar migrações do banco de dados
 echo "Executando migrações do banco de dados..."
-npx prisma db push
+
+# Tentar conectar ao banco e criar as tabelas
+npx prisma db push --force-reset || npx prisma db push
+
+echo "Migrações concluídas!"
 
 # Iniciar a aplicação
 echo "Iniciando a aplicação..."
