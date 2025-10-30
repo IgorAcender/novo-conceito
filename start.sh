@@ -1,12 +1,15 @@
 #!/bin/sh
 
-# Executar migrações do banco de dados
-echo "Executando migrações do banco de dados..."
+echo "Configurando banco de dados..."
 
-# Tentar conectar ao banco e criar as tabelas
-npx prisma db push --force-reset || npx prisma db push
+# Usar o binário do Prisma que foi copiado
+echo "Criando tabelas no banco de dados..."
+./node_modules/prisma/build/index.js db push --schema=./prisma/schema.prisma || {
+    echo "Erro ao criar tabelas. Tentando com npx..."
+    npx --yes prisma@latest db push --schema=./prisma/schema.prisma
+}
 
-echo "Migrações concluídas!"
+echo "Banco de dados configurado com sucesso!"
 
 # Iniciar a aplicação
 echo "Iniciando a aplicação..."

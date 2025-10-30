@@ -53,6 +53,12 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Copiar arquivos necessários para Prisma
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma/
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma/
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma/
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma/
+
 # Copiar script de inicialização
 COPY --from=builder /app/start.sh ./start.sh
 RUN chmod +x start.sh
