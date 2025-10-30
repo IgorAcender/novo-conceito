@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    
     const {
       nome,
       descricao,
@@ -41,11 +42,24 @@ export async function POST(request: NextRequest) {
       quantidadeInicial,
       precoCusto,
       precoVenda,
+      taxaCartao = 0,
+      embalagem = 0,
+      outrosCustos = 0,
       remessaId,
     } = body
 
-    // Calcular margem de lucro
-    const margemLucro = ((parseFloat(precoVenda) - parseFloat(precoCusto)) / parseFloat(precoCusto)) * 100
+    // Calcular custos
+    const precoCustoNum = parseFloat(precoCusto)
+    const taxaCartaoNum = parseFloat(taxaCartao)
+    const embalagemNum = parseFloat(embalagem)
+    const outrosCustosNum = parseFloat(outrosCustos)
+    const precoVendaNum = parseFloat(precoVenda)
+
+    // Calcular custo total
+    const custoTotal = precoCustoNum + taxaCartaoNum + embalagemNum + outrosCustosNum
+
+    // Calcular margem de lucro baseada no custo total
+    const margemLucro = ((precoVendaNum - custoTotal) / custoTotal) * 100
 
     const produto = await prisma.produto.create({
       data: {
@@ -54,8 +68,12 @@ export async function POST(request: NextRequest) {
         fotos: JSON.stringify(fotos || []),
         quantidadeInicial: parseInt(quantidadeInicial),
         quantidadeEstoque: parseInt(quantidadeInicial),
-        precoCusto: parseFloat(precoCusto),
-        precoVenda: parseFloat(precoVenda),
+        precoCusto: precoCustoNum,
+        precoVenda: precoVendaNum,
+        taxaCartao: taxaCartaoNum,
+        embalagem: embalagemNum,
+        outrosCustos: outrosCustosNum,
+        custoTotal,
         margemLucro,
         remessaId,
       },
