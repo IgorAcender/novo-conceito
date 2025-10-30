@@ -9,7 +9,10 @@ WORKDIR /app
 
 # Instalar dependências baseadas no gerenciador de pacotes preferido
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN \
+  if [ -f package-lock.json ]; then npm ci; \
+  else npm install; \
+  fi
 
 # Reconstruir o código fonte apenas quando necessário
 FROM base AS builder
@@ -27,9 +30,9 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 # Descommentar a linha seguinte para desabilitar a telemetria durante a execução.
-# ENV NEXT_TELEMETRY_DISABLED 1
+# ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -48,7 +51,7 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]
