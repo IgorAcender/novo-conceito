@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Remessa {
+  id            String    @id @default(cuid())
+  dataCompra    DateTime
+  custoViagem   Float
+  fornecedor    String?
+  observacoes   String?
+  status        String    @default("ativa") // ativa, finalizada
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  produtos      Produto[]
+
+  @@map("remessas")
+}
+
+model Produto {
+  id                String    @id @default(cuid())
+  nome              String
+  descricao         String?
+  fotos             String    // JSON array de URLs
+  quantidadeInicial Int
+  quantidadeEstoque Int
+  precoCusto        Float
+  precoVenda        Float
+  margemLucro       Float     // calculado: ((precoVenda - precoCusto) / precoCusto) * 100
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  remessaId         String
+  remessa           Remessa   @relation(fields: [remessaId], references: [id], onDelete: Cascade)
+
+  vendas            VendaProduto[]
+
+  @@map("produtos")
+}
+
+model Venda {
+  id          String    @id @default(cuid())
+  dataVenda   DateTime
+  valorTotal  Float
+  lucroTotal  Float
+  observacoes String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  produtos    VendaProduto[]
+
+  @@map("vendas")
+}
+
+model VendaProduto {
+  id              String   @id @default(cuid())
+  quantidade      Int
+  precoUnitario   Float
+  subtotal        Float
+  lucroUnitario   Float
+
+  vendaId         String
+  venda           Venda    @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+
+  produtoId       String
+  produto         Produto  @relation(fields: [produtoId], references: [id])
+
+  createdAt       DateTime @default(now())
+
+  @@map("vendas_produtos")
+}
