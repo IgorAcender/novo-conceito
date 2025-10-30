@@ -12,6 +12,7 @@ WORKDIR /app
 
 # Instalar dependências baseadas no gerenciador de pacotes preferido
 COPY package.json package-lock.json* ./
+COPY prisma ./prisma/
 RUN \
   if [ -f package-lock.json ]; then npm ci; \
   else npm install; \
