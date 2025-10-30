@@ -16,6 +16,10 @@ interface Produto {
   precoCusto: number
   precoVenda: number
   margemLucro: number
+  taxaCartao?: number
+  embalagem?: number
+  outrosCustos?: number
+  custoTotal?: number
   createdAt: string
   remessa: {
     id: string
@@ -242,10 +246,15 @@ export default function ProdutosPage() {
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t">
+                  <div className="pt-2 border-t flex items-center justify-between">
                     <Link href={`/remessas/${produto.remessa.id}`}>
                       <button className="text-xs text-primary hover:underline">
                         Ver remessa ({formatDate(produto.remessa.dataCompra)})
+                      </button>
+                    </Link>
+                    <Link href={`/produtos/${produto.id}`}>
+                      <button className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded hover:bg-primary/90">
+                        Editar
                       </button>
                     </Link>
                   </div>
