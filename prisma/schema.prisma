@@ -40,7 +40,7 @@ model Produto {
   taxaCartao        Float     @default(0)  // Taxa do cartão (valor fixo ou %)
   embalagem         Float     @default(0)  // Custo de embalagem/sacola
   outrosCustos      Float     @default(0)  // Outros custos diversos
-  custoTotal        Float     // precoCusto + taxaCartao + embalagem + outrosCustos
+  custoTotal        Float     @default(0)  // precoCusto + taxaCartao + embalagem + outrosCustos
   
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
