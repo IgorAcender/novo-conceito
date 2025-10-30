@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+// Forçar modo dinâmico para esta rota
+export const dynamic = 'force-dynamic'
+
 // GET - Listar todos os produtos
 export async function GET(request: NextRequest) {
   try {

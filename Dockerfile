@@ -4,7 +4,7 @@ FROM node:18-alpine AS base
 # Instalar dependências apenas quando necessário
 FROM base AS deps
 # Verificar https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine para entender por que libc6-compat pode ser necessário.
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl1.1-compat
 WORKDIR /app
 
 # Instalar dependências baseadas no gerenciador de pacotes preferido
@@ -37,6 +37,8 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Criar pasta public e copiar conteúdo se existir
+RUN mkdir -p ./public
 COPY --from=builder /app/public ./public
 
 # Definir as permissões corretas para cache pré-renderizado
