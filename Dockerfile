@@ -1,10 +1,13 @@
 # Use a imagem oficial do Node.js como base
 FROM node:18-alpine AS base
 
+# Adicionar dependências necessárias para Prisma
+RUN apk add --no-cache libc6-compat openssl
+
 # Instalar dependências apenas quando necessário
 FROM base AS deps
-# Verificar https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine para entender por que libc6-compat pode ser necessário.
-RUN apk add --no-cache libc6-compat openssl1.1-compat
+# Adicionar ferramentas de build para dependências nativas
+RUN apk add --no-cache python3 make g++
 WORKDIR /app
 
 # Instalar dependências baseadas no gerenciador de pacotes preferido
